@@ -3,6 +3,13 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      borderRadius: {
+        'none': '0',
+       'lg': '40px',
+      },
+      backgroundImage: {
+        'login-bg': "url('/assets/bg.jpg')"
+      },
       colors: {
         green: {
           dark: "#14CA15",
@@ -10,6 +17,9 @@ export default {
           light: "#58FD59",
         },
       },
+      width: {
+        '2/6': '29.5714286%',
+              }
     },
   },
   plugins: [],

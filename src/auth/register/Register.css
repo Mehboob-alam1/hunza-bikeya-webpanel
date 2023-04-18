@@ -1,0 +1,17 @@
+.background{
+    background-image: url(../../assets/bg.jpg);
+    height: 100vh;
+    width: 100%;
+    background-size: cover;
+    background-position: bottom;
+    object-fit: fill;
+}
+
+.bg-grad{
+    background: rgba(0,0,0,0.7);
+    height: 100vh;
+}
+.bg-grad1{
+    background: rgba(197, 197, 197, 0.16);
+
+}
