@@ -1,5 +1,4 @@
 import React from "react";
-import logo from "../../assets/logo.png";
 import "./Register.css";
 import { AiOutlineTwitter, AiOutlineInstagram } from "react-icons/ai";
 import { FaPinterest, FaFacebookF, FaGithub } from "react-icons/fa";
@@ -9,7 +8,7 @@ const Register = () => {
   return (
     <div className="background relative">
       <div className="bg-grad p-10">
-        <img src={logo} alt="" className="w-28 " />
+        <img src="" alt="" className="w-28 " />
 
         <div className="w-2/6 bg-grad1 ml-auto h-auto rounded-lg  pt-8 pl-8 pr-8 absolute right-52 top-20  pb-10">
           <div className="flex justify-between">

@@ -1,4 +1,3 @@
-import Sidebar from "./components/Sidebar/Sidebar";
 import { Routes, Route } from "react-router-dom";
 import Settings from "./pages/Settings";
 import Logout from "./pages/Logout";
@@ -6,6 +5,9 @@ import Dashboard from "./pages/Dashboard";
 import Passengers from "./pages/Passengers";
 import Drivers from "./pages/Drivers";
 import OfferBanner from "./pages/OfferBanner";
+import Home from "./pages/Home";
+import Login from "./auth/Login/Login";
+import Register from "./auth/register/Register";
 
 function App() {
   return (
