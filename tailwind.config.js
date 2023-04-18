@@ -3,6 +3,10 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      borderRadius: {
+        none: "0",
+        lg: "40px",
+      },
       colors: {
         green: {
           dark: "#14CA15",
@@ -10,8 +14,8 @@ export default {
           light: "#58FD59",
         },
       },
-      backgroundImage: {
-        "NH-pattern": "url('./src/assets/NHpattern.png')",
+      width: {
+        "2/6": "29.5714286%",
       },
     },
   },

@@ -5,7 +5,7 @@ import { NavLink } from "react-router-dom";
 import { RiSteering2Fill } from "react-icons/ri";
 import { AiFillSetting } from "react-icons/ai";
 import { FiLogOut } from "react-icons/fi";
-import Logo from "../../assets/logo.png";
+import Logo from "../../assets/hunzaBikeya.png";
 import BikeLogo from "../../assets/BikeLogo.png";
 import "./Sidebar.css";
 
