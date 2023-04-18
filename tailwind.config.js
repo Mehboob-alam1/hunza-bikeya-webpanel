@@ -10,6 +10,9 @@ export default {
           light: "#58FD59",
         },
       },
+      backgroundImage: {
+        "NH-pattern": "url('./src/assets/NHpattern.png')",
+      },
     },
   },
   plugins: [],
