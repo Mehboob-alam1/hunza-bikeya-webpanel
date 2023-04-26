@@ -13,30 +13,30 @@ const Sidebar = () => {
   return (
     <section className="w-72 h-screen py-5 px-8 shadow-lg shadow-gray-500/50 flex flex-col justify-between ">
       <div className="">
-        <img src={Logo} alt="" className="mb-6" />
+        <img src={Logo} alt="" className="mb-10" />
         <ul className="flex flex-col gap-y-1">
           <NavLink
             to="/dashboard"
-            className="bg-green-dark text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 text-white cursor-pointer active:bg-green-dark"
+            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark"
           >
             <CiGrid42 className="text-xl font-extrabold" /> Dashboard
           </NavLink>
           <NavLink
             to="/passengers"
-            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-dark hover:text-white cursor-pointer active:bg-green-dark"
+            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark"
           >
             <VscPerson className="text-xl font-extrabold" /> Passengers
           </NavLink>
           <NavLink
             to="/drivers"
-            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-dark hover:text-white cursor-pointer active:bg-green-dark"
+            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark"
           >
             <RiSteering2Fill />
             Drivers
           </NavLink>
           <NavLink
             to="/offer-banner"
-            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-dark hover:text-white cursor-pointer active:bg-green-dark"
+            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark"
           >
             <CiShop />
             Offer Banner
@@ -61,14 +61,14 @@ const Sidebar = () => {
         <ul>
           <NavLink
             to="/settings"
-            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-dark hover:text-white cursor-pointer active:bg-green-dark"
+            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark mb-1"
           >
             <AiFillSetting />
             Settings
           </NavLink>
           <NavLink
             to="/logout"
-            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-dark hover:text-white cursor-pointer active:bg-green-dark"
+            className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark"
           >
             <FiLogOut />
             Logout
