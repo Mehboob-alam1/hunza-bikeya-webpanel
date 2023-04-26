@@ -6,6 +6,9 @@ body{
     font-family: 'Poppins', sans-serif;
 }
 
+<<<<<<< HEAD
 .active{
     @apply bg-green-dark text-white;
 }
+=======
+>>>>>>> 2db8dfd68e8be0454cb054ca2bee6021ceb6883b

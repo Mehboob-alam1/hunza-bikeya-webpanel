@@ -12,10 +12,16 @@ export default {
           dark: "#14CA15",
           medium: "#12E814",
           light: "#58FD59",
+          
         },
+        backgroundColor: theme => ({
+            ...theme('colors'),
+             'primary': '#787575',
+              })
       },
       width: {
         "2/6": "29.5714286%",
+        "10/12": "79%"
       },
     },
   },
