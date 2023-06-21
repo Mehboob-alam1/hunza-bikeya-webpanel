@@ -8,6 +8,8 @@ import OfferBanner from "./pages/OfferBanner";
 import Home from "./pages/Home";
 import Login from "./auth/Login/Login";
 import Register from "./auth/register/Register";
+import PassengerModel from "./pages/Passengers/PassengerModel";
+
 
 function App() {
   return (

@@ -9,3 +9,17 @@ body{
 .active{
     @apply bg-green-dark text-white;
 }
+
+.modelOpacity{
+    background-color: rgba(0,0,0,0.7);
+}
+
+.online{
+    background-color: #ECF8E6;
+    color: #0CAA0D
+}
+
+.offline{
+    background-color: #E9ECEF;
+    color: #747070;
+}

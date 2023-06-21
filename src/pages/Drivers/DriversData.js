@@ -7,6 +7,7 @@ import img6 from '../../assets/passengerImages/table6.png'
 
 export const DriversData = [
     {
+        id: 1,
         img: img1,
         name: "Earrly Casig",
         email: "earlyca@gmail.com",
@@ -17,6 +18,7 @@ export const DriversData = [
         
     },
     {
+        id: 2,
         img: img2,
         name: "Earrly Casig",
         email: "earlyca@gmail.com",
@@ -27,6 +29,7 @@ export const DriversData = [
 
     },
     {
+        id: 3,
         img: img3,
         name: "Earrly Casig",
         email: "earlyca@gmail.com",
@@ -36,6 +39,7 @@ export const DriversData = [
         status: "Online",
     },
     {
+        id: 4,
         img: img4,
         name: "Earrly Casig",
         email: "earlyca@gmail.com",
@@ -45,6 +49,7 @@ export const DriversData = [
         status: "Online",
     },
     {
+        id: 5,
         img: img5,
         name: "Earrly Casig",
         email: "earlyca@gmail.com",
@@ -54,6 +59,7 @@ export const DriversData = [
         status: "Online",
     },
     {
+        id: 6,
         img: img6,
         name: "Earrly Casig",
         email: "earlyca@gmail.com",

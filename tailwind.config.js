@@ -23,7 +23,9 @@ export default {
         "2/6": "29.5714286%",
         "10/12": "79%"
       },
+      
     },
   },
-  plugins: [],
+  plugins: [require("daisyui")],
+
 };

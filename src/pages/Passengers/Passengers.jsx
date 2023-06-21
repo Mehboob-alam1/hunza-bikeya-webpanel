@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { GrNotification } from "react-icons/gr";
 import { BsChevronDown } from "react-icons/bs";
@@ -7,10 +7,17 @@ import profile from "../../assets/passengerImages/profile.png";
 import "./Passenger.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import { PassengerData } from "./PassengerData";
+import PassengerModel from "./PassengerModel";
 
 const Passengers = () => {
+  const [selectedPassenger, setSelectedPassenger] = useState(null);
+
+  const handleDetailClick = (passenger) => {
+    setSelectedPassenger(passenger);
+  };
+
   return (
-    <div className=" w-10/12 pl-5 pr-6 pt-6 bg-gray-50">
+    <div className=" w-10/12 pl-5 pr-6 pt-6 bg-gray-50 ">
       <div className="flex justify-between ">
         <span className="text-3xl">Passengers</span>
 
@@ -75,27 +82,31 @@ const Passengers = () => {
               <th scope="col" className="px-0 py-3"></th>
             </tr>
           </thead>
-          {PassengerData.map((data, index) => (
-            <tbody key={index}>
+          {PassengerData.map((passenger) => (
+            <tbody key={passenger.id}>
               <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
                 <td
                   scope="row"
                   className="pl-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
                 >
-                  <img src={data.img} alt="" />
-                  <span>{data.name}</span>
+                  <img src={passenger.img} alt="" />
+                  <span>{passenger.name}</span>
                 </td>
-                <td className="pl-2 py-4">{data.email}</td>
-                <td className="px-2 py-4">{data.phone}</td>
-                <td className="px-4 py-4">{data.trips}</td>
-                <td className="px-4 py-4">{data.cancel}</td>
+                <td className="pl-2 py-4">{passenger.email}</td>
+                <td className="px-2 py-4">{passenger.phone}</td>
+                <td className="px-4 py-4">{passenger.trips}</td>
+                <td className="px-4 py-4">{passenger.cancel}</td>
                 <td className="px-0 py-4">
-                  <button className="p-2 bg-gray-50 rounded-md">
-                    {data.status}
+                  <button className={`status p-2 bg-gray-50 rounded-md ${
+                    passenger.status.toLowerCase() === 'online'
+                      ? 'online'
+                      : 'offline'
+                  }`}>
+                    {passenger.status}
                   </button>
                 </td>
                 <td className="px-2 py-4">
-                  <button className="p-1 bg-green-500 text-white rounded-md">
+                  <button className="p-1 bg-green-500 text-white rounded-md" onClick={() => handleDetailClick(passenger)}>
                     Details
                   </button>
                 </td>
@@ -103,7 +114,16 @@ const Passengers = () => {
             </tbody>
           ))}
         </table>
+
+
       </div>
+        <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
+          {selectedPassenger && (
+            <PassengerModel
+            passenger={selectedPassenger}
+             onClose={() => setSelectedPassenger(null)}/>
+          )}
+          </div>
     </div>
   );
 };
