@@ -11,9 +11,23 @@ import PassengerModel from "./PassengerModel";
 
 const Passengers = () => {
   const [selectedPassenger, setSelectedPassenger] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filteredPassengers, setFilteredPassengers] = useState( PassengerData);
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    const filteredData = PassengerData.filter(
+      (passenger) =>
+        passenger.name.toLowerCase().startsWith(query) ||
+        passenger.email.toLowerCase().startsWith(query) ||
+        passenger.phone.toLowerCase().includes(query)
+    );
+    setFilteredPassengers(filteredData);
+  };
 
   const handleDetailClick = (passenger) => {
-    setSelectedPassenger(passenger);
+    setSelectedPassenger(passenger)
   };
 
   return (
@@ -36,9 +50,11 @@ const Passengers = () => {
         <div className="flex items-center gap-1 bg-white p-1 shadow rounded-sm">
           <AiOutlineSearch className="text-xl" />
           <input
-            type="text"
-            placeholder="Search"
-            className="bg-transparent outline-none"
+           type="text"
+           placeholder="Search passengers..."
+           value={searchQuery}
+           onChange={handleSearch}
+           className="w-full h-full bg-transparent outline-none"
           />
         </div>
 
@@ -48,7 +64,9 @@ const Passengers = () => {
             id="countries"
             className="bg-white border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-50 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 outline-none"
           >
-            <option selected value="Trips 0 to Eng to Limit">Trips 0 to Eng to Limit</option>
+            <option selected value="Trips 0 to Eng to Limit">
+              Trips 0 to Eng to Limit
+            </option>
             <option value="US">United States</option>
             <option value="CA">Canada</option>
             <option value="FR">France</option>
@@ -82,7 +100,7 @@ const Passengers = () => {
               <th scope="col" className="px-0 py-3"></th>
             </tr>
           </thead>
-          {PassengerData.map((passenger) => (
+          {filteredPassengers.map((passenger) => (
             <tbody key={passenger.id}>
               <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
                 <td
@@ -97,16 +115,21 @@ const Passengers = () => {
                 <td className="px-4 py-4">{passenger.trips}</td>
                 <td className="px-4 py-4">{passenger.cancel}</td>
                 <td className="px-0 py-4">
-                  <button className={`status p-2 bg-gray-50 rounded-md ${
-                    passenger.status.toLowerCase() === 'online'
-                      ? 'online'
-                      : 'offline'
-                  }`}>
+                  <button
+                    className={`status p-2 bg-gray-50 rounded-md ${
+                      passenger.status.toLowerCase() === "online"
+                        ? "online"
+                        : "offline"
+                    }`}
+                  >
                     {passenger.status}
                   </button>
                 </td>
                 <td className="px-2 py-4">
-                  <button className="p-1 bg-green-500 text-white rounded-md" onClick={() => handleDetailClick(passenger)}>
+                  <button
+                    className="p-1 bg-green-500 text-white rounded-md"
+                    onClick={() => handleDetailClick(passenger)}
+                  >
                     Details
                   </button>
                 </td>
@@ -114,16 +137,15 @@ const Passengers = () => {
             </tbody>
           ))}
         </table>
-
-
       </div>
-        <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
-          {selectedPassenger && (
-            <PassengerModel
+      <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
+        {selectedPassenger && (
+          <PassengerModel
             passenger={selectedPassenger}
-             onClose={() => setSelectedPassenger(null)}/>
-          )}
-          </div>
+            onClose={() => setSelectedPassenger(null)}
+          />
+        )}
+      </div>
     </div>
   );
 };
