@@ -9,7 +9,19 @@ import DriversModel from "./DriversModel";
 
 const Drivers = () => {
   const [selectedDriver, setSelectedDriver] = useState(null);
+  const [searchQuery, setSearhQuery] = useState("");
+  const [filterDriver, setFilterDriver] = useState(DriversData);
   
+  const handleSearch=(e)=>{
+    const query = e.target.value.toLowerCase();
+    setSearhQuery(query);
+    const filteredData = DriversData.filter((driver)=>
+      driver.name.toLowerCase().startsWith(query) ||
+      driver.email.toLowerCase().startsWith(query) ||
+      driver.phone.toLowerCase().includes(query)
+    );
+    setFilterDriver(filteredData)
+  }
   const handleToggle = (driver) => {
     setSelectedDriver(driver)
   };
@@ -34,6 +46,8 @@ const Drivers = () => {
           <AiOutlineSearch className="text-xl" />
           <input
             type="text"
+            value={searchQuery}
+            onChange={handleSearch}
             placeholder="Search"
             className="bg-transparent outline-none"
           />
@@ -81,7 +95,7 @@ const Drivers = () => {
               <th scope="col" className="px-0 py-3"></th>
             </tr>
           </thead>
-          {DriversData.map((driver) => (
+          {filterDriver.map((driver) => (
             <tbody key={driver.id}>
               <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
                 <td
