@@ -4,8 +4,7 @@ import Sidebar from "../components/Sidebar/Sidebar";
 
 const Home = () => {
   return (
-    <div className="flex">
-     <Sidebar />
+    <div className="w-[100%]">
       <Outlet />
     </div>
   );

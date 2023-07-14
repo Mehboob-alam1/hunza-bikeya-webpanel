@@ -17,7 +17,7 @@ const Passengers = () => {
   };
 
   return (
-    <div className=" w-10/12 pl-5 pr-6 pt-6 bg-gray-50 ">
+    <div className=" w-[100%] pl-5 pr-6 pt-6 bg-gray-50 ">
       <div className="flex justify-between ">
         <span className="text-3xl">Passengers</span>
 

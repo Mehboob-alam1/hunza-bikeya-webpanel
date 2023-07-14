@@ -1,0 +1,17 @@
+/* OverviewCharts.css */
+
+.ApexCharts .apexcharts-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .ApexCharts .apexcharts-gridline {
+    display: none !important;
+  }
+  
+  .ApexCharts .apexcharts-tooltip {
+    border: none !important;
+  }
+  

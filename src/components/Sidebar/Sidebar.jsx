@@ -11,7 +11,7 @@ import "./Sidebar.css";
 
 const Sidebar = () => {
   return (
-    <section className="w-72 h-screen py-5 px-8 shadow-lg shadow-gray-500/50 flex flex-col justify-between ">
+    <section className=" w-[25%] h-content py-5 px-8 shadow-lg gap-20 shadow-gray-500/50 flex flex-col justify-between ">
       <div className="">
         <img src={Logo} alt="" className="mb-10" />
         <ul className="flex flex-col gap-y-1">
@@ -67,7 +67,7 @@ const Sidebar = () => {
             Settings
           </NavLink>
           <NavLink
-            to="/logout"
+            to="/register"
             className="text-lg pt-2 pb-2 pl-4 pr-4 rounded-md flex items-center gap-2 hover:bg-green-medium hover:text-white cursor-pointer ease-in duration-150 active:bg-green-dark"
           >
             <FiLogOut />
