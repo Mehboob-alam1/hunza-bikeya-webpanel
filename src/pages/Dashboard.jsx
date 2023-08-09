@@ -1,5 +1,4 @@
 import React from "react";
-import Hello from "../assets/hello.png";
 import UsersCard from "../components/UsersCard/UsersCard";
 import Greeting from "../components/Greetings/Greeting";
 import Aside from "../components/Aside/Aside";
@@ -9,7 +8,7 @@ import EarningsRadialBar from "../Charts/EarningsRadialBar";
 const Dashboard = () => {
   return (
     // Dashboard Main Wrapper //
-    <section className="flex">
+    <section className="flex ">
 
       {/* Dashboard Section */}
       <div className="p-4 w-[100%] col-span-2">

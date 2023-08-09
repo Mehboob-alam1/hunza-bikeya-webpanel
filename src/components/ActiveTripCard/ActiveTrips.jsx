@@ -7,8 +7,8 @@ import Driver1 from "../../assets/Driver1.png";
 const ActiveTrips = () => {
   return (
     <div>
-      {TripsData.map((tripsVal) => (
-        <div className="shadow-lg shadow-gray-500/50 rounded-md px-4 py-6 my-4">
+      {TripsData.map((tripsVal, index) => (
+        <div className="shadow-lg shadow-gray-500/50 rounded-md px-4 py-6 my-4" key={index}>
           <div className="flex justify-between items-start gap-4">
             <div>{tripsVal.time}</div>
             <img src={Arrow} alt="" />

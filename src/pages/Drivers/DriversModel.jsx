@@ -1,14 +1,66 @@
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { MdOutlineMail } from "react-icons/md";
 import { IoIosCall } from "react-icons/io";
 import { BsFillCircleFill } from "react-icons/bs";
 import { RxTriangleDown } from "react-icons/rx";
-import {RiTaxiWifiFill} from 'react-icons/ri'
-import {RiEBikeFill} from 'react-icons/ri'
-import {IoDocumentTextOutline} from 'react-icons/io5'
+import { RiEBikeFill } from "react-icons/ri";
+import { AiFillBank } from "react-icons/ai";
+import { IoDocumentTextOutline } from "react-icons/io5";
+import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
+import process from "process";
+import DocumentsModel from "./DocumentsModel";
+import { db } from "../../firebaseConfig";
+import { onValue, ref } from "firebase/database";
+import ReactMapGl from "react-map-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import BankModel from "./BankModel";
 
-const DriversModel = ({ driver, onClose }) => {
-    
+const TOKEN = process.env.REACT_APP_TOKEN;
+
+const DriversModel = ({ rider, onClose }) => {
+  const [vehData, setVehData] = useState([]);
+
+  // bank detail state
+  const [showBankDetails, setShowBankDetails] = useState(null);
+  const [bankData, setBankData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // documents state
+  const [selectDocument, setSelectedDocument] = useState(null);
+  const [documentsData, setDocumentsData] = useState(null);
+
+  useEffect(() => {
+    if (rider) {
+      onValue(ref(db, `/Riders/Vehicles/${rider.userId}`), (snapshot) => {
+        const data = snapshot.val();
+        console.log(data);
+        setVehData(data);
+      });
+    }
+  }, [rider]);
+
+  const handleDocument = () => {
+    if (rider) {
+        onValue(ref(db, `/Riders/documents/${rider.userId}`), (snapshot) => {
+          const docData = snapshot.val();
+          console.log(docData);
+          setDocumentsData(docData);
+        });
+      }
+      setIsLoading(false);
+      setSelectedDocument(true);
+  };
+  const handleBank = () => {
+    if (rider) {
+      onValue(ref(db, `/Riders/BankDetails/${rider.userId}`), (snapshot) => {
+        const bankData = snapshot.val();
+        // console.log(data);
+        setBankData(bankData);
+      });
+      setShowBankDetails(true);
+      setIsLoading(false);
+    }
+  };
   return (
     <>
       {/* Main modal */}
@@ -19,58 +71,34 @@ const DriversModel = ({ driver, onClose }) => {
             {/* Modal header */}
             <div className="flex items-start justify-between rounded-lg dark:border-gray-600">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white"></h3>
-              <button
-                onClick={onClose}
-                type="button"
-                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                data-modal-hide="defaultModal"
-              >
-                <svg
-                  aria-hidden="true"
-                  className="w-6 h-6"
-                  fill="black"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-                <span className="sr-only">Close modal</span>
-              </button>
+             
             </div>
             {/* Modal body */}
-            <div className="p-6 space">
+            <div className="p-6 space mt-4">
               <div className="flex justify-between">
                 <div className="flex gap-1 items-start">
                   <div className=" w-[100%] h-[15vh]">
-                    <img src={driver.img} alt="" className="w-[90%] h-[90%]" />
+                    {/* <img src={driver.img} alt="" className="w-[90%] h-[90%]" /> */}
                   </div>
                   <div className="flex flex-col gap-2">
-                    <p className="font-bold text-md">{driver.name}</p>
+                    <p className="font-bold text-md">{rider.userName}</p>
                     <div className="flex gap-2 items-center">
                       <MdOutlineMail className="text-md" />
                       <span className="text-[#107ACA] cursor-pointer text-sm">
-                        {driver.email}
+                        {rider.userEmail}
                       </span>
                     </div>
                     <div className="flex gap-4 items-center">
                       <IoIosCall className="text-md" />
-                      <span className="text-sm">{driver.phone}</span>
+                      <span className="text-sm">{rider.userPhoneNumber}</span>
                     </div>
                   </div>
                 </div>
                 <div className="flex flex-col pr-4 gap-2 text-center justify-center items-center">
                   <button
-                    className={` btn btn-sm bg-green-100 text-green-500 text-xs status  bg-gray-50 rounded-md ${
-                      driver.status.toLowerCase() === "online"
-                        ? "online"
-                        : "offline"
-                    }`}
+                    className={` btn btn-sm bg-green-100 text-green-500 text-xs status  bg-gray-50 rounded-md `}
                   >
-                    {driver.status}
+                    {rider.avaliable === true ? "Online" : "Offline"}
                   </button>
                   <div className="rating flex gap-1">
                     <input
@@ -207,71 +235,117 @@ const DriversModel = ({ driver, onClose }) => {
 
           <div className="bg-[#F6F7F7] w-[35%] p-4 pt-1 pr-1">
             <div className="flex justify-end">
-            <button
-              onClick={onClose}
-              type="button"
-              className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 ml-auto inline-flex self-end items-center dark:hover:bg-gray-600 dark:hover:text-white"
-              data-modal-hide="defaultModal"
-            >
-              <svg
-                aria-hidden="true"
-                className="w-6 h-6"
-                fill="black"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
+              <button
+                onClick={onClose}
+                type="button"
+                className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1 ml-auto inline-flex self-end items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="defaultModal"
               >
-                <path
-                  fillRule="evenodd"
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              <span className="sr-only">Close modal</span>
-            </button>
+                <svg
+                  aria-hidden="true"
+                  className="w-6 h-6"
+                  fill="black"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
             </div>
             <p className="text-lg font-bold mb-3">Vehicle Information</p>
 
             <div className="flex gap-10 items-start justify-start">
               <div className=" w-[20%] h-[15vh] ">
-                <img
+                {/* <img
                   src={driver.img}
                   alt=""
                   className="w-[100%] h-[90%] object-cover"
-                />
+                /> */}
               </div>
-              <div className="flex flex-col gap-2 text-sm">
-                <p className="">Yamaha+YZF RE</p>
-                <div className="flex gap-2 items-center">
-                  <span className=" cursor-pointer">2022-RED</span>
+              {}
+
+              {vehData && (
+                <div className="flex flex-col gap-2 text-sm">
+                  <p className="">
+                    Vehicle Name:{" "}
+                    <span className="font-bold">{vehData.vehicleBrand}</span>
+                  </p>
+                  <div className="flex gap-2 items-center">
+                    <span className=" cursor-pointer">
+                      Vehicle ModeL:{" "}
+                      <span className="font-bold">{vehData.vehicleModel}</span>
+                    </span>
+                  </div>
+                  <div className="flex gap-4 items-center">
+                    <span className="">
+                      Vehicle Type:{" "}
+                      <span className="font-bold">{vehData.vehicleType}</span>
+                    </span>
+                  </div>
                 </div>
-                <div className="flex gap-4 items-center">
-                  <span className="">BCNC483</span>
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="flex justify-center gap-4  pr-2 mt-10">
-                <div className="card text-center flex flex-col gap-4 items-center bg-white pl-5 pr-5 pb-3 pt-3 rounded-md">
-                    <RiTaxiWifiFill  className="text-2xl"/>
-                    <span className="text-sm">Driving Usernm</span>
-                    <button className="btn btn-sm btn-outline  text-green-500 border-green">View</button>
-                </div>
-                <div className="card flex flex-col gap-4 text-center items-center bg-white pl-6 pr-5 pb-3 pt-3 rounded-md">
-                    <RiEBikeFill  className="text-2xl"/>
-                    <span className="text-sm">His Booking</span>
-                    <button className="btn btn-sm btn-outline text-green-500 border-green">View</button>
-                </div>
-                <div className="card flex flex-col gap-4 text-center items-center bg-white pl-6 pr-5 pb-3 pt-3 rounded-md">
-                    <IoDocumentTextOutline  className="text-2xl"/>
-                    <span className="text-sm">Docoments</span>
-                    <button className="btn btn-sm btn-outline text-green-500 border-green">View</button>
-                </div>
+              <div className="card text-center flex flex-col gap-4 items-center bg-white pl-5 pr-5 pb-3 pt-3 rounded-md">
+                <AiFillBank className="text-2xl" />
+                <span className="text-sm">Bank Details</span>
+                <button
+                  className="btn btn-sm btn-outline  text-green-500 border-green"
+                  onClick={handleBank}
+                >
+                  View
+                </button>
+              </div>
+              <div className="card flex flex-col gap-4 text-center items-center bg-white pl-6 pr-5 pb-3 pt-3 rounded-md">
+                <RiEBikeFill className="text-2xl" />
+                <span className="text-sm">His Booking</span>
+                <button className="btn btn-sm btn-outline text-green-500 border-green">
+                  View
+                </button>
+              </div>
+              <div className="card flex flex-col gap-4 text-center items-center bg-white pl-6 pr-5 pb-3 pt-3 rounded-md">
+                <IoDocumentTextOutline className="text-2xl" />
+                <span className="text-sm">Docoments</span>
+                <button
+                  className="btn btn-sm btn-outline text-green-500 border-green"
+                  onClick={handleDocument}
+                >
+                  View
+                </button>
+              </div>
             </div>
+
+            
             {/* last active location */}
-           <div className="mt-5">
-           <h6 className="font-bold">Last Active Location</h6>
-           </div>
+
+            <div className="mt-5">
+              <h6 className="font-bold">Last Active Location</h6>
+            </div>
           </div>
+        </div>
+        <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
+          {selectDocument && (
+            <DocumentsModel
+              documentData={documentsData}
+              isLoading={isLoading}
+              onClose={() => setSelectedDocument(false)}
+            />
+          )}
+        </div>
+        <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
+          {showBankDetails && (
+            <BankModel
+              bankData={bankData}
+              isLoading={isLoading}
+              onClose={() => setShowBankDetails(false)}
+            />
+          )}
         </div>
       </div>
     </>

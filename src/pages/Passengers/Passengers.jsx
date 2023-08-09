@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { IoMdNotificationsOutline } from "react-icons/io";
 import { GrNotification } from "react-icons/gr";
 import { BsChevronDown } from "react-icons/bs";
@@ -8,27 +8,49 @@ import "./Passenger.css";
 import { AiOutlineSearch } from "react-icons/ai";
 import { PassengerData } from "./PassengerData";
 import PassengerModel from "./PassengerModel";
+import { db } from "../../firebaseConfig";
+import { onValue, ref } from "firebase/database";
+import Skeleton from "react-loading-skeleton";
+import CardSkeletion from "../../components/CardSkeletion/CardSkeletion";
+import PassengerSkeleton from "../../components/CardSkeletion/PassengerSkeleton";
 
 const Passengers = () => {
   const [selectedPassenger, setSelectedPassenger] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredPassengers, setFilteredPassengers] = useState( PassengerData);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [userData, setUserData] = useState([]);
 
   const handleSearch = (event) => {
     const query = event.target.value.toLowerCase();
     setSearchQuery(query);
-    const filteredData = PassengerData.filter(
+    const filteredData = userData.filter(
       (passenger) =>
         passenger.name.toLowerCase().startsWith(query) ||
         passenger.email.toLowerCase().startsWith(query) ||
         passenger.phone.toLowerCase().includes(query)
     );
-    setFilteredPassengers(filteredData);
+    setUserData(filteredData);
   };
 
   const handleDetailClick = (passenger) => {
-    setSelectedPassenger(passenger)
+    setSelectedPassenger(passenger);
   };
+
+  useEffect(() => {
+    onValue(ref(db, "/HunzaBykea/UserInfo"), (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      if (data !== null) {
+        const usersArray = Object.keys(data).map((userId) => ({
+          id: userId,
+          ...data[userId],
+        }));
+        setUserData(usersArray);
+        setIsLoading(false);
+      }
+    });
+  }, []);
 
   return (
     <div className=" w-[100%] pl-5 pr-6 pt-6 bg-gray-50 ">
@@ -50,11 +72,11 @@ const Passengers = () => {
         <div className="flex items-center gap-1 bg-white p-1 shadow rounded-sm">
           <AiOutlineSearch className="text-xl" />
           <input
-           type="text"
-           placeholder="Search passengers..."
-           value={searchQuery}
-           onChange={handleSearch}
-           className="w-full h-full bg-transparent outline-none"
+            type="text"
+            placeholder="Search passengers..."
+            value={searchQuery}
+            onChange={handleSearch}
+            className="w-full h-full bg-transparent outline-none"
           />
         </div>
 
@@ -88,54 +110,56 @@ const Passengers = () => {
               <th scope="col" className="px-6 py-3 border-r">
                 Phone
               </th>
-              <th scope="col" className="px-6 py-3 border-r">
+              {/* <th scope="col" className="px-6 py-3 border-r">
                 Trips
               </th>
               <th scope="col" className="pl-3 py-3">
                 Canceled
-              </th>
-              <th scope="col" className="px-0 py-3">
+              </th> */}
+              {/* <th scope="col" className="px-0 py-3">
                 status
-              </th>
+              </th> */}
               <th scope="col" className="px-0 py-3"></th>
             </tr>
           </thead>
-          {filteredPassengers.map((passenger) => (
-            <tbody key={passenger.id}>
-              <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
-                <td
-                  scope="row"
-                  className="pl-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
-                >
-                  <img src={passenger.img} alt="" />
-                  <span>{passenger.name}</span>
-                </td>
-                <td className="pl-2 py-4">{passenger.email}</td>
-                <td className="px-2 py-4">{passenger.phone}</td>
-                <td className="px-4 py-4">{passenger.trips}</td>
-                <td className="px-4 py-4">{passenger.cancel}</td>
-                <td className="px-0 py-4">
+          {isLoading ? (
+            <PassengerSkeleton  rows={2}/>
+          ) : (
+            <>
+              {userData.map((passenger, index) => (
+                <tbody key={passenger.userId}>
+                  <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
+                    <td
+                      scope="row"
+                      className="pl-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
+                    >
+                      {/* <img src={passenger.img} alt="" /> */}
+                      <span>{passenger.name}</span>
+                    </td>
+                    <td className="pl-2 py-4">{passenger.email}</td>
+                    <td className="px-2 py-4">{passenger.phone}</td>
+                    {/* <td className="px-4 py-4">0</td>
+                <td className="px-4 py-4">0</td> */}
+                    {/* <td className="px-0 py-4">
                   <button
-                    className={`status p-2 bg-gray-50 rounded-md ${
-                      passenger.status.toLowerCase() === "online"
-                        ? "online"
-                        : "offline"
-                    }`}
+                    className={`status p-2 bg-gray-50 rounded-md `}
                   >
                     {passenger.status}
                   </button>
-                </td>
-                <td className="px-2 py-4">
-                  <button
-                    className="p-1 bg-green-500 text-white rounded-md"
-                    onClick={() => handleDetailClick(passenger)}
-                  >
-                    Details
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          ))}
+                </td> */}
+                    <td className="px-2 py-4">
+                      <button
+                        className="p-1 bg-green-500 text-white rounded-md"
+                        onClick={() => handleDetailClick(passenger)}
+                      >
+                        Details
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              ))}
+            </>
+          )}
         </table>
       </div>
       <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">

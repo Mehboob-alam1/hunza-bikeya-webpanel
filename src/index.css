@@ -29,3 +29,12 @@ body{
     background-color: #E9ECEF;
     color: #747070;
 }
+
+.register-button:disabled{
+    background-color: #747070 !important;
+}
+
+.active {
+    background-color: #14CA15; /* Set your desired active color here */
+    color: #fff; /* Set your desired text color for active state */
+  }

@@ -1,30 +1,60 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GrNotification } from "react-icons/gr";
 import { CgChevronDown } from "react-icons/cg";
-import profile from "../../assets/passengerImages/profile.png";
-import "./Drivers.css";
 import { AiOutlineSearch } from "react-icons/ai";
-import { DriversData } from "./DriversData";
+import profile from "../../assets/passengerImages/profile.png";
 import DriversModel from "./DriversModel";
+import { db } from "../../firebaseConfig";
+import { onValue, ref } from "firebase/database";
+import CardSkeletion from "../../components/CardSkeletion/CardSkeletion";
+import "react-loading-skeleton/dist/skeleton.css";
+import "./Drivers.css";
 
 const Drivers = () => {
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [searchQuery, setSearhQuery] = useState("");
-  const [filterDriver, setFilterDriver] = useState(DriversData);
-  
-  const handleSearch=(e)=>{
+  //state for  getting rider's data from database
+  const [riderData, setRiderData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearhQuery(query);
-    const filteredData = DriversData.filter((driver)=>
-      driver.name.toLowerCase().startsWith(query) ||
-      driver.email.toLowerCase().startsWith(query) ||
-      driver.phone.toLowerCase().includes(query)
+    const filteredData = riderData.filter(
+      (rider) =>
+        rider.userName.toLowerCase().startsWith(query) ||
+        rider.userEmail.toLowerCase().startsWith(query) ||
+        rider.userPhoneNumber.toLowerCase().includes(query)
     );
-    setFilterDriver(filteredData)
-  }
-  const handleToggle = (driver) => {
-    setSelectedDriver(driver)
+    setRiderData(filteredData);
   };
+
+  const handleToggle = (rider) => {
+    setSelectedDriver(rider);
+  };
+
+  useEffect(() => {
+    onValue(ref(db, "/Riders/Profiles"), (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+      if (data !== null) {
+        const ridersArray = Object.keys(data).map((userId) => ({
+          id: userId,
+          ...data[userId],
+        }));
+        setRiderData(ridersArray);
+        setIsLoading(false);
+      }
+    });
+  }, []);
+
+  const usersAval = ()=>{
+    onValue(ref(db, '/Riders/available'), (snapshot)=>{
+      const aval = snapshot.val();
+      console.log(aval)
+    })
+  }
+
   return (
     <div className="w-[100%] pl-5 pr-6 pt-6 bg-gray-50">
       <div className="flex justify-between ">
@@ -95,53 +125,54 @@ const Drivers = () => {
               <th scope="col" className="px-0 py-3"></th>
             </tr>
           </thead>
-          {filterDriver.map((driver) => (
-            <tbody key={driver.id}>
-              <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
-                <td
-                  scope="row"
-                  className="pl-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
-                >
-                  <img src={driver.img} alt="" />
-                  <span>{driver.name}</span>
-                </td>
-                <td className="pl-2 py-4">{driver.email}</td>
-                <td className="px-2 py-4">{driver.phone}</td>
-                <td className="px-4 py-4">{driver.trips}</td>
-                <td className="px-4 py-4">{driver.cancel}</td>
-                <td className="px-0 py-4">
-                  <button
-                    className={`status p-2 bg-gray-50 rounded-md ${
-                      driver.status.toLowerCase() === "online"
-                        ? "online"
-                        : "offline"
-                    }`}
-                  >
-                    {driver.status}
-                  </button>
-                </td>
-                <td className="px-2 py-4">
-                  <button
-                    className="p-1 bg-green-500 text-white rounded-md"
-                    onClick={() => handleToggle(driver)}
-                  >
-                    Details
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          ))}
-        </table>
-
-      </div>
-        <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
-          {selectedDriver && (
-            <DriversModel
-              driver={selectedDriver}
-              onClose={() => setSelectedDriver(null)}
-            />
+          {isLoading ? (
+            <CardSkeletion rows={2} />
+          ) : (
+            <>
+              {riderData.map((rider) => (
+                <>
+                  <tbody key={rider.userId}>
+                    <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
+                      <td
+                        scope="row"
+                        className="pl-4 py-6 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
+                      >
+                        {/* <img src={driver.img} alt="" /> */}
+                        <span>{rider.userName}</span>
+                      </td>
+                      <td className="pl-2 py-4">{rider.userEmail}</td>
+                      <td className="px-2 py-4">{rider.userPhoneNumber} </td>
+                      <td className="px-4 py-4">0</td>
+                      <td className="px-4 py-4">0</td>
+                      <td className="px-0 py-4">
+                        <button className={`status p-2 bg-gray-50 rounded-md `}>
+                          {rider.available ? "Online" : "Offline"}
+                        </button>
+                      </td>
+                      <td className="px-2 py-4">
+                        <button
+                          className="p-1 bg-green-500 text-white rounded-md"
+                          onClick={() => handleToggle(rider)}
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </>
+              ))}
+            </>
           )}
-        </div>
+        </table>
+      </div>
+      <div className="absolute top-[0] left-0 z-index-[999] w-[100%]">
+        {selectedDriver && (
+          <DriversModel
+            rider={selectedDriver}
+            onClose={() => setSelectedDriver(null)}
+          />
+        )}
+      </div>
     </div>
   );
 };

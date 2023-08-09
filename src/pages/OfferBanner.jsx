@@ -1,8 +1,10 @@
-import { useState,useRef } from "react";
+import { useState, useRef } from "react";
 import { TbCameraPlus } from "react-icons/tb";
 import Greeting from "../components/Greetings/Greeting";
 import { MdDone } from "react-icons/md";
-import {AiFillWarning} from 'react-icons/ai'
+import { AiFillWarning } from "react-icons/ai";
+import {storage} from '../firebaseConfig'
+import {ref, uploadBytes, getDownloadURL} from 'firebase/storage'
 
 const OfferBanner = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -10,28 +12,44 @@ const OfferBanner = () => {
   const [showError, setShowError] = useState(false);
   const fileInputRef = useRef(null);
 
+  const [image, setImage] = useState(null)
+  const [url, setUrl] = useState(null)
+
+  
+
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if(file && file.size <= 5 * 1024 * 1024 && file.type.startsWith('image/')){
+    if (
+      file &&
+      file.size <= 5 * 1024 * 1024 &&
+      file.type.startsWith("image/")
+    ) {
+      setImage(file)
       displayImage(file);
       setShowDialog(true);
-      setShowError(false)
-    }else{
-      setShowError(true)
+      setShowError(false);
+    } else {
+      setShowError(true);
       setShowDialog(false);
     }
   };
 
+  console.log(image)
+
   const handleDrop = (event) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
-    if (file && file.size <= 5 * 1024 * 1024 && file.type.startsWith('image/')) {
+    if (
+      file &&
+      file.size <= 5 * 1024 * 1024 &&
+      file.type.startsWith("image/")
+    ) {
       displayImage(file);
       setShowDialog(true);
-      setShowError(false)
+      setShowError(false);
     } else {
       // Handle error, display a message, etc.
-      setShowError(true)
+      setShowError(true);
       setShowDialog(false);
     }
   };
@@ -51,14 +69,29 @@ const OfferBanner = () => {
   };
 
   const handleCloseDialog = () => {
-    setShowDialog(false);
+    const imageRef = ref(storage, `documents/admin/${ Date.now()}${image.name}`)
+    uploadBytes(imageRef, image).then(()=>{
+      setShowDialog(false);
+      // getDownloadURL(imageRef).then((url)=>{
+      //   setUrl(url)
+      // }).catch(error =>{
+      //   console.log(error.message, "error getting in the image url")
+      // })
+      setImage(null)
+    }).catch(error =>{
+      console.log(error.message, "error getting in the uploading..")
+    })
   };
 
   const handleBrowseClick = () => {
     fileInputRef.current.click();
   };
+
+  const handleSubmit = ()=>{
+
+  }
   return (
-    <div className="w-[79%] bg-[#F7F7F8] p-6">
+    <div className="w-[100%] bg-[#F7F7F8] p-6 min-h-[100vh]">
       <Greeting />
 
       <h5 className="font-bold text-xl pt-5 pl-[10%] pb-4">
@@ -102,7 +135,10 @@ const OfferBanner = () => {
         </label>
       </div>
       <div className="flex justify-center">
-        <button className="btn btn-wide bg-[#4E4E4E] hover:bg-[#5E5E5E] text-white font-bold capitalize mt-12" onClick={handleBrowseClick}>
+        <button
+          className="btn btn-wide bg-[#4E4E4E] hover:bg-[#5E5E5E] text-white font-bold capitalize mt-12"
+          onClick={handleBrowseClick}
+        >
           Browse Images
         </button>
       </div>
@@ -131,17 +167,19 @@ const OfferBanner = () => {
               <AiFillWarning />
             </div>
             <p className="text-lg text-gray-800">
-            Error! File is too long Max .size 5MB
+              Error! File is too long Max .size 5MB
             </p>
             <button
               className="btn bg-outline border-red-500 text-red-500 font-bold capitalize hover:bg-[darkred] hover:text-white"
               onClick={handleBrowseClick}
             >
-             Try Again
+              Try Again
             </button>
           </div>
         </div>
       )}
+
+      {/* <img src={url} alt="" width={300} /> */}
     </div>
   );
 };

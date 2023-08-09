@@ -10,24 +10,38 @@ import Login from "./auth/Login/Login";
 import Register from "./auth/register/Register";
 import PassengerModel from "./pages/Passengers/PassengerModel";
 import Sidebar from "./components/Sidebar/Sidebar";
-
+import { SkeletonTheme } from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
+import Error from "./pages/Error";
+import PrivateRoutes from "./components/PrivateComponent";
 
 function App() {
   return (
     <div className="flex">
-        <Sidebar/>
-      <Routes>
-        <Route path="/" element={<Home />}>
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/passengers" element={<Passengers />} />
-          <Route path="/drivers" element={<Drivers />} />
-          <Route path="/offer-banner" element={<OfferBanner />} />
-          <Route path="/settings" element={<Settings />} />
-          <Route path="/logout" element={<Logout />} />
-        </Route>
-        <Route path="/login" exact element={<Login />} />
-        <Route path="/register" exact element={<Register />} />
-      </Routes>
+      <SkeletonTheme>
+        <Routes element={PrivateRoutes}>
+          <Route element={<PrivateRoutes />}>
+            <Route path="/dashboard" exact element={<Home />}>
+              <Route path="/dashboard/" exact element={<Dashboard />} />
+              <Route
+                path="/dashboard/passengers"
+                exact
+                element={<Passengers />}
+              />
+              <Route path="/dashboard/drivers" exact element={<Drivers />} />
+              <Route
+                path="/dashboard/offer-banner"
+                exact
+                element={<OfferBanner />}
+              />
+              <Route path="/dashboard/settings" exact element={<Settings />} />
+            </Route>
+          </Route>
+          <Route path="/" exact element={<Login />} />
+          <Route path="/signup" exact element={<Register />} />
+          <Route path="*" element={<Error />} />
+        </Routes>
+      </SkeletonTheme>
     </div>
   );
 }

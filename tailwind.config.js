@@ -7,6 +7,7 @@ export default {
         none: "0",
         lg: "40px",
       },
+      
       colors: {
         green: {
           dark: "#14CA15",

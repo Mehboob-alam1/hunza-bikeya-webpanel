@@ -5,6 +5,7 @@ import { BsFillCircleFill } from "react-icons/bs";
 import { RxTriangleDown } from "react-icons/rx";
 
 const PassengerModel = ({ passenger, onClose }) => {
+  
   return (
     <>
       {/* Main modal */}
@@ -44,7 +45,7 @@ const PassengerModel = ({ passenger, onClose }) => {
                 <div className="flex gap-3">
                   <div className=" w-[100%] h-[15vh]">
                     <img
-                      src={passenger.img}
+                      // src={passenger.img}
                       alt=""
                       className="w-[100%] h-[100%]"
                     />
@@ -64,7 +65,7 @@ const PassengerModel = ({ passenger, onClose }) => {
                   </div>
                 </div>
                 <div className="flex flex-col pr-4 gap-2 text-center justify-center items-center">
-                  <button
+                  {/* <button
                     className={` btn btn-sm bg-green-100 text-green-500 status p-2 bg-gray-50 rounded-md ${
                       passenger.status.toLowerCase() === "online"
                         ? "online"
@@ -72,7 +73,7 @@ const PassengerModel = ({ passenger, onClose }) => {
                     }`}
                   >
                     {passenger.status}
-                  </button>
+                  </button> */}
                   <div className="rating flex gap-2">
                     <input
                       type="radio"
