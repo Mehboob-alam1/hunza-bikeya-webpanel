@@ -13,8 +13,11 @@ import { onValue, ref } from "firebase/database";
 import Skeleton from "react-loading-skeleton";
 import CardSkeletion from "../../components/CardSkeletion/CardSkeletion";
 import PassengerSkeleton from "../../components/CardSkeletion/PassengerSkeleton";
+import { useBikeya } from "../../context/Context";
+import ProfileDropDown from "../../components/ProfileDropDown/ProfileDropDown";
 
 const Passengers = () => {
+  const {user} = useBikeya()
   const [selectedPassenger, setSelectedPassenger] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -57,16 +60,8 @@ const Passengers = () => {
       <div className="flex justify-between ">
         <span className="text-3xl">Passengers</span>
 
-        <div className="flex items-center gap-4 ">
-          <div className="notification">
-            <GrNotification />
-          </div>
-
-          <div className="rounded-full h-6 w-6 flex items-center justify-center border-green-500 border-2">
-            <img src={profile} alt="" className="rounded-full" />
-          </div>
-          <CgChevronDown />
-        </div>
+        {/* profile component */}
+        <ProfileDropDown/>
       </div>
       <div className="flex justify-between pt-6 items-center">
         <div className="flex items-center gap-1 bg-white p-1 shadow rounded-sm">

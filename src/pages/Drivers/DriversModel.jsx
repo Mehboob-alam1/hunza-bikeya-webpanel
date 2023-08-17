@@ -6,16 +6,23 @@ import { RxTriangleDown } from "react-icons/rx";
 import { RiEBikeFill } from "react-icons/ri";
 import { AiFillBank } from "react-icons/ai";
 import { IoDocumentTextOutline } from "react-icons/io5";
-import { GoogleMap, Marker, useLoadScript } from "@react-google-maps/api";
 import process from "process";
 import DocumentsModel from "./DocumentsModel";
 import { db } from "../../firebaseConfig";
 import { onValue, ref } from "firebase/database";
-import ReactMapGl from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
+import Location from "../../assets/location.png";
+
+import ReactMapGL, {
+  FullscreenControl,
+  GeolocateControl,
+  FlyToInterpolator,
+  Marker,
+} from "react-map-gl";
+
 import BankModel from "./BankModel";
 
-const TOKEN = process.env.REACT_APP_TOKEN;
+const MAPBOX_TOKEN =
+  "pk.eyJ1IjoiYmFpZ3VsbGFoNDQiLCJhIjoiY2xrdWNyOGF4MDh4MDNycjB5dHlicGVzZyJ9.7a4eIASxH3JVKowIKMME7g"; // Set your mapbox token here
 
 const DriversModel = ({ rider, onClose }) => {
   const [vehData, setVehData] = useState([]);
@@ -29,6 +36,20 @@ const DriversModel = ({ rider, onClose }) => {
   const [selectDocument, setSelectedDocument] = useState(null);
   const [documentsData, setDocumentsData] = useState(null);
 
+  // user location\
+
+  const [viewport, setViewport] = React.useState({
+    latitude: 37.7577,
+    longitude: -122.4376,
+    zoom: 8,
+  });
+
+  //btn Posiiton of full screen toggle
+  const fullscreenControlStyle = {
+    right: 10,
+    top: 10,
+  };
+
   useEffect(() => {
     if (rider) {
       onValue(ref(db, `/Riders/Vehicles/${rider.userId}`), (snapshot) => {
@@ -41,14 +62,14 @@ const DriversModel = ({ rider, onClose }) => {
 
   const handleDocument = () => {
     if (rider) {
-        onValue(ref(db, `/Riders/documents/${rider.userId}`), (snapshot) => {
-          const docData = snapshot.val();
-          console.log(docData);
-          setDocumentsData(docData);
-        });
-      }
-      setIsLoading(false);
-      setSelectedDocument(true);
+      onValue(ref(db, `/Riders/documents/${rider.userId}`), (snapshot) => {
+        const docData = snapshot.val();
+        console.log(docData);
+        setDocumentsData(docData);
+      });
+    }
+    setIsLoading(false);
+    setSelectedDocument(true);
   };
   const handleBank = () => {
     if (rider) {
@@ -61,6 +82,17 @@ const DriversModel = ({ rider, onClose }) => {
       setIsLoading(false);
     }
   };
+  useEffect(() => {
+    if (rider) {
+      onValue(ref(db, `/Riders/location/${rider.userId}`), (snapshot) => {
+        const locationData = snapshot.val();
+        console.log(locationData);
+        // setBankData(bankData);
+      });
+      // setShowBankDetails(true);
+      // setIsLoading(false);
+    }
+  }, []);
   return (
     <>
       {/* Main modal */}
@@ -71,7 +103,6 @@ const DriversModel = ({ rider, onClose }) => {
             {/* Modal header */}
             <div className="flex items-start justify-between rounded-lg dark:border-gray-600">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white"></h3>
-             
             </div>
             {/* Modal body */}
             <div className="p-6 space mt-4">
@@ -321,11 +352,35 @@ const DriversModel = ({ rider, onClose }) => {
               </div>
             </div>
 
-            
             {/* last active location */}
 
             <div className="mt-5">
               <h6 className="font-bold">Last Active Location</h6>
+              <ReactMapGL
+                {...viewport}
+                width="100%"
+                height="46.5vh"
+                onViewportChange={(nextViewport) => setViewport(nextViewport)}
+                transitionInterpolator={new FlyToInterpolator()}
+                mapboxApiAccessToken={MAPBOX_TOKEN}
+                mapStyle="mapbox://styles/baigullah44/clku9wg7u000a01qpagiydb3t"
+              >
+                <FullscreenControl style={fullscreenControlStyle} />
+                {/* <GeolocateControl
+                  style={geolocateControlStyle}
+                  positionOptions={{ enableHighAccuracy: true }}
+                  trackUserLocation={true}
+                  auto={false}
+                /> */}
+                <Marker
+                  latitude={68.5081359}
+                  longitude={83.79993}
+                  offsetLeft={-20}
+                  offsetTop={-10}
+                >
+                <img src={Location} alt="pin" height="40px" width="30px" />
+                </Marker>
+              </ReactMapGL>
             </div>
           </div>
         </div>

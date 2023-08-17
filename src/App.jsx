@@ -14,6 +14,7 @@ import { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Error from "./pages/Error";
 import PrivateRoutes from "./components/PrivateComponent";
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 function App() {
   return (

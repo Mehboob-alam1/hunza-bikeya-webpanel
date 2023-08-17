@@ -9,8 +9,11 @@ import { onValue, ref } from "firebase/database";
 import CardSkeletion from "../../components/CardSkeletion/CardSkeletion";
 import "react-loading-skeleton/dist/skeleton.css";
 import "./Drivers.css";
+import { useBikeya } from "../../context/Context";
+import ProfileDropDown from "../../components/ProfileDropDown/ProfileDropDown";
 
 const Drivers = () => {
+  const {user} = useBikeya()
   const [selectedDriver, setSelectedDriver] = useState(null);
   const [searchQuery, setSearhQuery] = useState("");
   //state for  getting rider's data from database
@@ -60,16 +63,7 @@ const Drivers = () => {
       <div className="flex justify-between ">
         <span className="text-3xl">Drivers</span>
 
-        <div className="flex items-center gap-4 ">
-          <div className="notification">
-            <GrNotification />
-          </div>
-
-          <div className="rounded-full h-6 w-6 flex items-center justify-center border-green-500 border-2">
-            <img src={profile} alt="" className="rounded-full" />
-          </div>
-          <CgChevronDown />
-        </div>
+        <ProfileDropDown/>
       </div>
       <div className="flex justify-between pt-6 items-center">
         <div className="flex items-center gap-1 bg-white p-1 shadow rounded-sm">
@@ -155,7 +149,7 @@ const Drivers = () => {
                           onClick={() => handleToggle(rider)}
                         >
                           Details
-                        </button>
+                        </button>                                             
                       </td>
                     </tr>
                   </tbody>

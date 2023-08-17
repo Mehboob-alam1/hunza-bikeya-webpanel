@@ -12,6 +12,7 @@ import "./Sidebar.css";
 
 const Sidebar = () => {
   const firebase = useBikeya();
+  const {user} = useBikeya()
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
