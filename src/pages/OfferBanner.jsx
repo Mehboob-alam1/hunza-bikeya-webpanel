@@ -3,9 +3,12 @@ import { TbCameraPlus } from "react-icons/tb";
 import Greeting from "../components/Greetings/Greeting";
 import { MdDone } from "react-icons/md";
 import { AiFillWarning } from "react-icons/ai";
-import { storage } from "../firebaseConfig";
+import { ref as ref2 } from 'firebase/database'
+import { db, storage } from "../firebaseConfig";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import ProfileDropDown from "../components/ProfileDropDown/ProfileDropDown";
+import { set } from "firebase/database";
+import { uid } from 'uid';
 
 const OfferBanner = () => {
   const [selectedImage, setSelectedImage] = useState(null);
@@ -14,7 +17,8 @@ const OfferBanner = () => {
   const fileInputRef = useRef(null);
 
   const [image, setImage] = useState(null);
-  const [url, setUrl] = useState(null);
+  const [url, setUrl] = useState('');
+  let bannerId = uid(12)
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -32,8 +36,6 @@ const OfferBanner = () => {
       setShowDialog(false);
     }
   };
-
-  console.log(image);
 
   const handleDrop = (event) => {
     event.preventDefault();
@@ -68,32 +70,35 @@ const OfferBanner = () => {
   };
 
   const handleCloseDialog = () => {
-    const imageRef = ref(storage, `documents/admin/${Date.now()}${image.name}`);
-    uploadBytes(imageRef, image)
+    const storageRef = ref(storage, `documents/admin/${Date.now()}${image.name}`);
+    uploadBytes(storageRef, image)
       .then(() => {
+        getDownloadURL(storageRef)
+          .then((url) => {
+            setUrl(url)
+            set(ref2(db, `Banners/` + bannerId), {
+              BannerImage: url,
+              imageId: bannerId
+            })
+          })
         setShowDialog(false);
-        // getDownloadURL(imageRef).then((url)=>{
-        //   setUrl(url)
-        // }).catch(error =>{
-        //   console.log(error.message, "error getting in the image url")
-        // })
-        setImage(null);
+        setImage("");
+        setSelectedImage(null)
       })
       .catch((error) => {
         console.log(error.message, "error getting in the uploading..");
       });
   };
 
+
+
   const handleBrowseClick = () => {
     fileInputRef.current.click();
   };
-
-  const handleSubmit = () => {};
   return (
     <div className="flex justify-between">
       <div className="w-[100%] bg-[#F7F7F8] p-6 min-h-[100vh]">
         <Greeting />
-
         <h5 className="font-bold text-xl pt-5 pl-[10%] pb-4">
           Add Deal card images
         </h5>
@@ -181,7 +186,7 @@ const OfferBanner = () => {
 
         {/* <img src={url} alt="" width={300} /> */}
       </div>
-      <div className="ml-14 mt-5">
+      <div className="ml-14 mr-2 mt-5">
         <ProfileDropDown />
       </div>
     </div>

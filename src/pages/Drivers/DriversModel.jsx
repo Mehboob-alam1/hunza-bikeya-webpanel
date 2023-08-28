@@ -11,20 +11,14 @@ import DocumentsModel from "./DocumentsModel";
 import { db } from "../../firebaseConfig";
 import { onValue, ref } from "firebase/database";
 import Location from "../../assets/location.png";
-
-import ReactMapGL, {
-  FullscreenControl,
-  GeolocateControl,
-  FlyToInterpolator,
-  Marker,
-} from "react-map-gl";
-
+import ReactMapGl, { Marker, Popup } from 'react-map-gl'
 import BankModel from "./BankModel";
+import Rating from "../../components/RatingComponent/Rating";
 
 const MAPBOX_TOKEN =
-  "pk.eyJ1IjoiYmFpZ3VsbGFoNDQiLCJhIjoiY2xrdWNyOGF4MDh4MDNycjB5dHlicGVzZyJ9.7a4eIASxH3JVKowIKMME7g"; // Set your mapbox token here
+  "pk.eyJ1IjoiYmFpZ3VsbGFoNDQiLCJhIjoiY2xoOGx4dWc4MDl1NDNlbmF4djRzcDNwNCJ9.l4v24ee6iOf3f_THqmzfAA"; // Set your mapbox token here
 
-const DriversModel = ({ rider, onClose }) => {
+const DriversModel = ({ rider, onClose, stars, reviews }) => {
   const [vehData, setVehData] = useState([]);
 
   // bank detail state
@@ -36,20 +30,7 @@ const DriversModel = ({ rider, onClose }) => {
   const [selectDocument, setSelectedDocument] = useState(null);
   const [documentsData, setDocumentsData] = useState(null);
 
-  // user location\
-
-  const [viewport, setViewport] = React.useState({
-    latitude: 37.7577,
-    longitude: -122.4376,
-    zoom: 8,
-  });
-
-  //btn Posiiton of full screen toggle
-  const fullscreenControlStyle = {
-    right: 10,
-    top: 10,
-  };
-
+  // fetching vehicle information
   useEffect(() => {
     if (rider) {
       onValue(ref(db, `/Riders/Vehicles/${rider.userId}`), (snapshot) => {
@@ -59,6 +40,8 @@ const DriversModel = ({ rider, onClose }) => {
       });
     }
   }, [rider]);
+
+  // fetching documents
 
   const handleDocument = () => {
     if (rider) {
@@ -71,28 +54,92 @@ const DriversModel = ({ rider, onClose }) => {
     setIsLoading(false);
     setSelectedDocument(true);
   };
+
+  // fetching bank details
   const handleBank = () => {
     if (rider) {
       onValue(ref(db, `/Riders/BankDetails/${rider.userId}`), (snapshot) => {
         const bankData = snapshot.val();
-        // console.log(data);
         setBankData(bankData);
       });
       setShowBankDetails(true);
       setIsLoading(false);
     }
   };
+
+  // fetching user location 
+
+  const [viewPort, setViewPort] = useState({
+    latitude: 35.9208102,
+    longitude: 74.314044,
+    zoom: 12,
+  })
+
+  const [newPlace, setNewPlace] = useState(null)
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [popupContent, setPopupContent] = useState(null);
+
+  const handleMarkerClick = async (location) => {
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${location.longitude},${location.latitude}.json?access_token=${MAPBOX_TOKEN}`
+      );
+      const data = await response.json();
+
+      // Look for more specific locality levels in the context array
+      const specificLocality = data.features.find(feature =>
+        ['quarter', 'ward', 'neighborhood'].includes(feature.place_type[0])
+      );
+
+      const placeName = specificLocality ? specificLocality.text : data.features[0].place_name;
+      setPopupContent(placeName);
+
+      setSelectedLocation(location);
+
+      setViewPort({
+        ...viewPort,
+        latitude: parseFloat(location.latitude),
+        longitude: parseFloat(location.longitude),
+        zoom: 20, // Adjust the zoom level as needed
+      });
+    } catch (error) {
+      console.error('Error fetching place information:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (selectedLocation) {
+      setViewPort({
+        latitude: parseFloat(selectedLocation.latitude),
+        longitude: parseFloat(selectedLocation.longitude),
+        zoom: 15, // Adjust the zoom level as needed
+      });
+    }
+  }, [selectedLocation]);
+
   useEffect(() => {
     if (rider) {
       onValue(ref(db, `/Riders/location/${rider.userId}`), (snapshot) => {
-        const locationData = snapshot.val();
-        console.log(locationData);
-        // setBankData(bankData);
+        const locData = snapshot.val();
+        // console.log(latitude, longitude);
+        setNewPlace(locData);
       });
-      // setShowBankDetails(true);
-      // setIsLoading(false);
     }
-  }, []);
+  }, [])
+
+  // fetching active rides
+  const [riderActiveRides, setRiderActiveRides] = useState([]);
+  useEffect(() => {
+    if (rider) {
+      onValue(ref(db, 'RiderActiveRides/'), (snapshot) => {
+        const riderRef = snapshot.val();
+        const riderActiveArray = Object.values(riderRef)
+        setRiderActiveRides(riderActiveArray)
+      })
+    }
+    console.log("current Rider", rider)
+  }, [])
+
   return (
     <>
       {/* Main modal */}
@@ -131,7 +178,8 @@ const DriversModel = ({ rider, onClose }) => {
                   >
                     {rider.avaliable === true ? "Online" : "Offline"}
                   </button>
-                  <div className="rating flex gap-1">
+                  <Rating stars={stars} reviews={reviews} />
+                  {/* <div className="rating flex gap-1">
                     <input
                       type="radio"
                       name="rating-1"
@@ -158,38 +206,42 @@ const DriversModel = ({ rider, onClose }) => {
                       checked
                       className="mask mask-star bg-[#FFD533]"
                     />
-                  </div>
-                  <span className="text-xs">125 Reviews</span>
+                  </div> */}
+                  {/* <span className="text-xs">125 Reviews</span> */}
                 </div>
               </div>
               {/* trips */}
 
-              <div className="py-6 bg-gray-100 p-4 pb-3 pt-2 mt-10 rounded-md">
-                <p className="border-b-2 pb-2 text-xs font-bold">
-                  8 june 2023 to 24
-                </p>
+              {
+                riderActiveRides.map((activeride) => (
+                  <div className="py-6 bg-gray-100 p-4 pb-3 pt-2 mt-10 rounded-md">
+                    <p className="border-b-2 pb-2 text-xs font-bold">
+                      {activeride.currentTime}
+                    </p>
 
-                <div className="flex pt-2">
-                  <div className="flex flex-col gap-6">
-                    <div className="flex gap-10 items-center justify-center">
-                      <span className="text-xs text-gray-300">11:24</span>
-                      <BsFillCircleFill className="text-green-400 text-xs" />
-                    </div>
-                    <div className="flex gap-10 items-center ">
-                      <span className="text-xs text-gray-400">12:24</span>
-                      <RxTriangleDown className="text-lg" />
+                    <div className="flex pt-2">
+                      <div className="flex flex-col gap-6">
+                        <div className="flex gap-10 items-center justify-center">
+                          <span className="text-xs text-gray-300">11:24</span>
+                          <BsFillCircleFill className="text-green-400 text-xs" />
+                        </div>
+                        <div className="flex gap-10 items-center ">
+                          <span className="text-xs text-gray-400">12:24</span>
+                          <RxTriangleDown className="text-lg" />
+                        </div>
+                      </div>
+                      <div className="flex flex-col pl-10 justify-center gap-2">
+                        <span className="text-xs text-gray-500">
+                          japan chok karimabad street 4
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          Aliabad Shopping Centreplaza,hnz
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex flex-col pl-10 justify-center gap-2">
-                    <span className="text-xs text-gray-500">
-                      japan chok karimabad street 4
-                    </span>
-                    <span className="text-xs text-gray-500">
-                      Aliabad Shopping Centreplaza,hnz
-                    </span>
-                  </div>
-                </div>
-              </div>
+                ))
+              }
               {/* trips */}
 
               <div className="py-6 bg-gray-100 p-4 pb-3 pt-2 mt-5 rounded-md">
@@ -295,10 +347,10 @@ const DriversModel = ({ rider, onClose }) => {
                 {/* <img
                   src={driver.img}
                   alt=""
-                  className="w-[100%] h-[90%] object-cover"
+                  className="w-[100%] h-[90%] object-cover" d
                 /> */}
               </div>
-              {}
+              { }
 
               {vehData && (
                 <div className="flex flex-col gap-2 text-sm">
@@ -356,31 +408,42 @@ const DriversModel = ({ rider, onClose }) => {
 
             <div className="mt-5">
               <h6 className="font-bold">Last Active Location</h6>
-              <ReactMapGL
-                {...viewport}
-                width="100%"
-                height="46.5vh"
-                onViewportChange={(nextViewport) => setViewport(nextViewport)}
-                transitionInterpolator={new FlyToInterpolator()}
+              <ReactMapGl
+                {...viewPort}
                 mapboxApiAccessToken={MAPBOX_TOKEN}
+                height={290}
+                width={420}
                 mapStyle="mapbox://styles/baigullah44/clku9wg7u000a01qpagiydb3t"
+                onViewportChange={(viewPort) => setViewPort(viewPort)}
+              // onDblClick={handleClick}
               >
-                <FullscreenControl style={fullscreenControlStyle} />
-                {/* <GeolocateControl
-                  style={geolocateControlStyle}
-                  positionOptions={{ enableHighAccuracy: true }}
-                  trackUserLocation={true}
-                  auto={false}
-                /> */}
-                <Marker
-                  latitude={68.5081359}
-                  longitude={83.79993}
-                  offsetLeft={-20}
-                  offsetTop={-10}
-                >
-                <img src={Location} alt="pin" height="40px" width="30px" />
-                </Marker>
-              </ReactMapGL>
+                {newPlace ? (
+                  <div key={newPlace.userId}>
+                    <Marker
+                      latitude={parseFloat(newPlace.latitude)}
+                      longitude={parseFloat(newPlace.longitude)}
+                      onClick={() => handleMarkerClick(newPlace)}
+                    >
+                      {console.log("latitude", newPlace.latitude, "longitude", newPlace.longitude)}
+                      <img src={Location} alt="" width={40} />
+                    </Marker>
+                  </div>
+                ) : null}
+
+                {selectedLocation && popupContent && (
+                  <Popup
+                    latitude={parseFloat(selectedLocation.latitude)}
+                    longitude={parseFloat(selectedLocation.longitude)}
+                    onClose={() => {
+                      setSelectedLocation(null);
+                      setPopupContent(null);
+                    }}
+                  >
+                    <div>{popupContent}</div>
+                  </Popup>
+                )}
+
+              </ReactMapGl>
             </div>
           </div>
         </div>

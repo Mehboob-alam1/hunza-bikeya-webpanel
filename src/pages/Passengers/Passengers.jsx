@@ -128,7 +128,7 @@ const Passengers = () => {
                       scope="row"
                       className="pl-4 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white flex items-center gap-2"
                     >
-                      {/* <img src={passenger.img} alt="" /> */}
+                      <img src="" alt="" />
                       <span>{passenger.name}</span>
                     </td>
                     <td className="pl-2 py-4">{passenger.email}</td>

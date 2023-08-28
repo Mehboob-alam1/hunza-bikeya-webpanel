@@ -60,7 +60,7 @@ const Dashboard = () => {
       </div>
 
      {/* Aside Section */}
-      <div className=" w-[40%] p-4 shadow-lg shadow-gray-500/50 rounded-md">
+      <div className=" w-[41%] p-[10px] shadow-lg shadow-gray-500/50 rounded-md">
         <Aside />
       </div>
     </section>

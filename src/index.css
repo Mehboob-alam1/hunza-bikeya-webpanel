@@ -8,33 +8,66 @@
     box-sizing: border-box;
 }
 
-body{
+body {
     font-family: 'Poppins', sans-serif;
 }
 
-.active{
+.active {
     @apply bg-green-dark text-white;
 }
 
-.modelOpacity{
-    background-color: rgba(0,0,0,0.7);
+.modelOpacity {
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
-.online{
+.online {
     background-color: #ECF8E6;
     color: #0CAA0D
 }
 
-.offline{
+.offline {
     background-color: #E9ECEF;
     color: #747070;
 }
 
-.register-button:disabled{
+.register-button:disabled {
     background-color: #747070 !important;
 }
 
 .active {
-    background-color: #14CA15; /* Set your desired active color here */
-    color: #fff; /* Set your desired text color for active state */
-  }
+    background-color: #14CA15;
+    color: #fff;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    color: green
+}
+
+::-webkit-scrollbar-thumb {
+    background: #12d332;
+    border-radius: 10px;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+
+.no-scrollbar::-webkit-scrollbar-track {
+    background: #d4d0d0;
+    color: green
+}
+
+.no-scrollbar::-webkit-scrollbar-thumb {
+    background: #1bdb3b;
+    border-radius: 5px;
+}
+
+/* Handle on hover */
+.no-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
