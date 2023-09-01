@@ -4,7 +4,7 @@ import ProfileDropDown from "../ProfileDropDown/ProfileDropDown";
 
 const Aside = () => {
   return (
-    <div className="overflow-y-scroll no-scrollbar h-[140vh]">
+    <div className="overflow-y-scroll no-scrollbar h-[140vh] p-1">
       <div className="flex justify-end mr-4">
       <ProfileDropDown/>
       </div>

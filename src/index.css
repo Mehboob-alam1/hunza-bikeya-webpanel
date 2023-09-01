@@ -3,71 +3,71 @@
 @tailwind utilities;
 
 * {
-    margin: 0%;
-    padding: 0%;
-    box-sizing: border-box;
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .active {
-    @apply bg-green-dark text-white;
+  @apply bg-green-dark text-white;
 }
 
 .modelOpacity {
-    background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .online {
-    background-color: #ECF8E6;
-    color: #0CAA0D
+  background-color: #ecf8e6;
+  color: #0caa0d;
 }
 
 .offline {
-    background-color: #E9ECEF;
-    color: #747070;
+  background-color: #e9ecef;
+  color: #747070;
 }
 
 .register-button:disabled {
-    background-color: #747070 !important;
+  background-color: #747070 !important;
 }
 
 .active {
-    background-color: #14CA15;
-    color: #fff;
+  background-color: #14ca15;
+  color: #fff;
 }
 
 ::-webkit-scrollbar {
-    width: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    color: green
+  background: #f1f1f1;
+  color: green;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #12d332;
-    border-radius: 10px;
+  background: #12d332;
+  border-radius: 10px;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-    width: 5px;
+  width: 5px;
 }
 
 .no-scrollbar::-webkit-scrollbar-track {
-    background: #d4d0d0;
-    color: green
+  background: #d4d0d0;
+  color: green;
 }
 
 .no-scrollbar::-webkit-scrollbar-thumb {
-    background: #1bdb3b;
-    border-radius: 5px;
+  background: #1bdb3b;
+  border-radius: 5px;
 }
 
 /* Handle on hover */
 .no-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555;
+  background: #555;
 }

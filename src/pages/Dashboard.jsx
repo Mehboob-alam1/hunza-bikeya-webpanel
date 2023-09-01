@@ -9,11 +9,12 @@ const Dashboard = () => {
   return (
     // Dashboard Main Wrapper //
     <section className="flex ">
-
       {/* Dashboard Section */}
       <div className="p-4 w-[100%] col-span-2">
         {/* Greetings */}
-        <div><Greeting /></div>
+        <div>
+          <Greeting />
+        </div>
         <div className="flex justify-between">
           <UsersCard />
           <UsersCard />
@@ -59,8 +60,8 @@ const Dashboard = () => {
         </div>
       </div>
 
-     {/* Aside Section */}
-      <div className=" w-[41%] p-[10px] shadow-lg shadow-gray-500/50 rounded-md">
+      {/* Aside Section */}
+      <div className=" w-[41%] p-2.5 border-l-2">
         <Aside />
       </div>
     </section>
