@@ -9,7 +9,7 @@ const Greeting = () => {
   return (
     <div>
       <h3 className="text-xl font-bold flex items-center gap-x-2 capitalize">
-        Hello {user && user.displayName} <img src={Hello} alt="hello" width="32" />
+        Hello <span className='text-bold text-white bg-green-400 rounded-md p-1'>{user && user.displayName} </span><img src={Hello} alt="hello" width="32" />
       </h3>
     </div>
   )

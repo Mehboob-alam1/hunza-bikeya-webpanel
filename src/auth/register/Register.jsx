@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const firebase = useBikeya();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [data, setData] = useState({
     userName: "",
@@ -23,7 +23,6 @@ const Register = () => {
 
   const [buttonDisable, setButtonDisable] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-
 
   // useEffect(()=>{
   //   if(firebase.isLoggedIn){
@@ -54,12 +53,12 @@ const Register = () => {
       .then((res) => {
         const user = res.user;
         console.log(user);
-        navigate("/signin")
+        navigate("/signin");
         updateProfile(user, {
           displayName: data.userName,
           phoneNumber: data.mobNumber,
         });
-        
+
         setButtonDisable(false);
         console.log(res);
       })

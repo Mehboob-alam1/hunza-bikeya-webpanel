@@ -19,19 +19,35 @@ const ProfileDropDown = () => {
     }
   };
   const { user } = useBikeya();
+  const getInitials = (name) => {
+    if (typeof name === "string" && name.trim() !== "") {
+      const words = name.split(" ");
+      return words
+        .map((word) => word[0].toUpperCase())
+        .join("")
+        .slice(0, 2); // You can adjust the number of initials displayed
+    } else {
+      return "N/A"; // Handle the case where username is undefined or empty
+    }
+  };
   return (
     <div className="">
       <div className="flex items-center gap-3">
         <div className="notification" onClick={() => setNotification(true)}>
-          <GrNotification
-            className="text-xl"
-            
-          />
+          <GrNotification className="text-xl" />
         </div>
         <div className="dropdown dropdown-end">
           <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
             <div className="w-14 rounded-lg mb-10 flex justify-between">
-              <img src={user.photoURL} />
+              {user.photoURL ? (
+                <img src={user.photoURL} />
+              ) : (
+                <>
+                  <div className="w-12 h-12 rounded-full bg-green-400 pr-1 text-white font-bold text-2xl flex items-center justify-center">
+                    {getInitials(user.displayName)}
+                  </div>
+                </>
+              )}
               <CgChevronDown />
             </div>
           </label>
@@ -49,11 +65,7 @@ const ProfileDropDown = () => {
         </div>
       </div>
       <div className="absolute top-[0] left-0 z-55 w-[100%]">
-        {notification && (
-          <Notification
-            onClose={() => setNotification(null)}
-          />
-        )}
+        {notification && <Notification onClose={() => setNotification(null)} />}
       </div>
     </div>
   );

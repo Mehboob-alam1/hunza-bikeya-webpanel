@@ -5,7 +5,7 @@ const CardSkeletion = ({ rows }) => {
   return (
     Array(rows).fill(0).map((_, index)=>(
 
-    <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b">
+    <tr className="bg-white border-b dark:bg-gray-900 dark:border-gray-700 border-b" key={index}>
       <td
         scope="row"
         className="pl-4 py-4 "
